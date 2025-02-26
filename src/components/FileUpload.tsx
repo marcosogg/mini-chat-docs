@@ -13,10 +13,12 @@ export const FileUpload = () => {
       if (!files) return;
 
       const file = files[0];
-      if (file.type !== 'text/markdown') {
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+      if (fileExtension !== 'md') {
         toast({
           title: "Invalid file type",
-          description: "Please upload a markdown file",
+          description: "Please upload a markdown file (.md)",
           variant: "destructive",
         });
         return;
@@ -85,3 +87,4 @@ export const FileUpload = () => {
     </div>
   );
 };
+
