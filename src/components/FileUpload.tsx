@@ -24,7 +24,7 @@ export const FileUpload = () => {
 
       try {
         const text = await file.text();
-        addDocument(text);
+        addDocument(text, file.name);
         toast({
           title: "Document uploaded",
           description: `Successfully loaded ${file.name}`,

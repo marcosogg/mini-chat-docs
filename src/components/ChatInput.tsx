@@ -60,12 +60,12 @@ Please respond in a clear, professional manner, using markdown formatting when a
     }
     
     // Add user message
-    addMessage(input, 'user');
+    await addMessage(input, 'user');
     setInput('');
 
     try {
       const aiResponse = await sendToOpenAI(input, uploadedDocs);
-      addMessage(aiResponse, 'ai', true);
+      await addMessage(aiResponse, 'ai', true);
     } catch (error) {
       toast({
         title: "Error",
