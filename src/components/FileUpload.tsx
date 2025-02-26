@@ -2,9 +2,11 @@
 import React, { useCallback } from 'react';
 import { useChat } from '../contexts/ChatContext';
 import { Upload } from 'lucide-react';
+import { useToast } from '../hooks/use-toast';
 
 export const FileUpload = () => {
-  const { addDocument, messages } = useChat();
+  const { addDocument, messages, getDocumentsCount } = useChat();
+  const { toast } = useToast();
 
   const handleFileDrop = useCallback(
     async (files: FileList | null) => {
@@ -12,14 +14,30 @@ export const FileUpload = () => {
 
       const file = files[0];
       if (file.type !== 'text/markdown') {
-        alert('Please upload a markdown file');
+        toast({
+          title: "Invalid file type",
+          description: "Please upload a markdown file",
+          variant: "destructive",
+        });
         return;
       }
 
-      const text = await file.text();
-      addDocument(text);
+      try {
+        const text = await file.text();
+        addDocument(text);
+        toast({
+          title: "Document uploaded",
+          description: `Successfully loaded ${file.name}`,
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to process the document",
+          variant: "destructive",
+        });
+      }
     },
-    [addDocument]
+    [addDocument, toast]
   );
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -31,15 +49,21 @@ export const FileUpload = () => {
     handleFileDrop(e.dataTransfer.files);
   };
 
-  // Only show upload area if no messages exist
   if (messages.length > 0) return null;
 
   return (
     <div
-      className="upload-area"
+      className="upload-area relative"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      {getDocumentsCount() > 0 && (
+        <div className="absolute top-2 right-2">
+          <span className="bg-primary text-white px-2 py-1 rounded-full text-sm">
+            {getDocumentsCount()} docs
+          </span>
+        </div>
+      )}
       <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
       <p className="text-gray-600 mb-2">
         Drag and drop your Intercom documentation here
