@@ -21,8 +21,7 @@ export const ChatMessages = () => {
     
     const html = marked(content, {
       gfm: true,
-      breaks: true,
-      sanitize: true
+      breaks: true
     });
     
     return (
